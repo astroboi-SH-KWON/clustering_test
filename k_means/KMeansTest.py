@@ -3,8 +3,12 @@ import pandas as pd
 from sklearn.cluster import KMeans
 import numpy as np
 
+#################### st hyper param for KMeans ####################
+K = 3
+#################### en hyper param for KMeans ####################
 
 #################### st prepare data ####################
+## let's generate a two-dimensional dataset containing four distinct blobs.
 # from sklearn.datasets.samples_generator import make_blobs
 # X, y_true = make_blobs(n_samples=300, centers=4, cluster_std=0.60, random_state=0)
 # print(type(X))
@@ -17,7 +21,7 @@ df = pd.DataFrame(excel, columns=['LFC', 'significance'])
 X = df.to_numpy()
 #################### en prepare data ####################
 
-kmeans = KMeans(n_clusters=3)
+kmeans = KMeans(n_clusters=K)
 kmeans.fit(X)
 y_kmeans = kmeans.predict(X)
 
@@ -55,6 +59,6 @@ def find_clusters(X, n_clusters, rseed=2):
     return centers, labels
 
 
-centers, labels = find_clusters(X, 3)
+centers, labels = find_clusters(X, K)
 plt.scatter(X[:, 0], X[:, 1], c=labels, cmap='viridis')
 # plt.show()
