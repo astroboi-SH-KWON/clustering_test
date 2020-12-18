@@ -5,8 +5,8 @@ import numpy as np
 
 
 #################### st hyper param for DBSCAN ####################
-EPS = 0.01
-MIN_SAMPL = 15
+EPS = 0.05
+MIN_SAMPL = 100
 #################### en hyper param for DBSCAN ####################
 
 #################### st prepare data ####################
@@ -15,6 +15,15 @@ excel = pd.read_excel('../input/clustering_KYG.xlsx')
 df = pd.DataFrame(excel, columns=['LFC', 'significance'])
 # input 값을 (n, 2) shape의 numpy array 로 만들기
 X = df.to_numpy()
+
+# X[:, 1] = - np.log(X[:, 1])
+
+# Min-Max Normalization
+print('X.shape', X.shape)
+# for i in range(X.shape[1]):
+#     X[:, i] = (X[:, i] - min(X[:, i])) / (max(X[:, i]) - min(X[:, i]))
+i = 1
+X[:, i] = (X[:, i] - min(X[:, i])) / (max(X[:, i]) - min(X[:, i]))
 #################### en prepare data ####################
 
 db = DBSCAN(eps=EPS, min_samples=MIN_SAMPL).fit(X)

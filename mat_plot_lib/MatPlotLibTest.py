@@ -4,6 +4,8 @@ import os
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
+import math
 
 WORK_DIR = os.getcwd() + "/"
 PROJECT_NAME = WORK_DIR.split("/")[-2]
@@ -17,6 +19,17 @@ PROJECT_NAME = WORK_DIR.split("/")[-2]
 excel = pd.read_excel('../input/clustering_KYG.xlsx')
 # x, y 값 선택
 DF = pd.DataFrame(excel, columns=['LFC', 'significance'])
+# DF = pd.DataFrame(excel, columns=['LFC', 'guide_score'])
+# DF['significance'] = -math.log(DF['significance'], 10)
+print(DF['significance'])
+# for i in range(len(DF['significance'])):
+#     DF['significance'].loc[i] = -math.log(DF['significance'].loc[i], 10)
+# min-Max
+min_x = min(DF['significance'])
+max_x = max(DF['significance'])
+for i in range(len(DF['significance'])):
+    DF['significance'].loc[i] = (DF['significance'].loc[i] - min_x) / (max_x - min_x)
+print(DF['significance'])
 #################### en prepare data ####################
 
 """

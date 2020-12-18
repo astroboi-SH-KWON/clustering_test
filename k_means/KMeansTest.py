@@ -1,24 +1,33 @@
+import time
+import os
+WORK_DIR = os.getcwd() + "/"
+PROJECT_NAME = WORK_DIR.split("/")[-2]
+
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.cluster import KMeans
 import numpy as np
 
 #################### st hyper param for KMeans ####################
-K = 3
+K = 4
 #################### en hyper param for KMeans ####################
 
 #################### st prepare data ####################
-## let's generate a two-dimensional dataset containing four distinct blobs.
-# from sklearn.datasets.samples_generator import make_blobs
-# X, y_true = make_blobs(n_samples=300, centers=4, cluster_std=0.60, random_state=0)
-# print(type(X))
-# print(X.shape)
-
 excel = pd.read_excel('../input/clustering_KYG.xlsx')
 # x, y 값 선택
+# df = pd.DataFrame(excel, columns=['significance', 'LFC'])
 df = pd.DataFrame(excel, columns=['LFC', 'significance'])
-# input 값을 (n, 2) shape의 numpy array 로 만들기
+# input 값을 (n, 2) shape의 numpy.ndarray 로 만들기
 X = df.to_numpy()
+
+# X[:, 1] = - np.log(X[:, 1])
+
+# Min-Max Normalization
+print('X.shape', X.shape)
+# for i in range(X.shape[1]):
+#     X[:, i] = (X[:, i] - min(X[:, i])) / (max(X[:, i]) - min(X[:, i]))
+i = 1
+X[:, i] = (X[:, i] - min(X[:, i])) / (max(X[:, i]) - min(X[:, i]))
 #################### en prepare data ####################
 
 kmeans = KMeans(n_clusters=K)
@@ -55,10 +64,33 @@ def find_clusters(X, n_clusters, rseed=2):
         centers = new_centers
         plt.scatter(centers[:, 0], centers[:, 1], alpha=0.5)
     # plt.show()
-
     return centers, labels
 
 
 centers, labels = find_clusters(X, K)
 plt.scatter(X[:, 0], X[:, 1], c=labels, cmap='viridis')
-# plt.show()
+plt.show()
+
+def get_elbow_point():
+    distortions = []
+    K = range(1, 10)
+    for k in K:
+        kmeanModel = KMeans(n_clusters=k)
+        kmeanModel.fit(X)
+        distortions.append(kmeanModel.inertia_)
+
+    plt.figure(figsize=(16, 8))
+    plt.plot(K, distortions, 'bx-')
+    plt.xlabel('k')
+    plt.ylabel('Distortion')
+    plt.title('The Elbow Method showing the optimal k')
+    plt.show()
+
+if __name__ == '__main__':
+    start_time = time.perf_counter()
+    print("start [ " + PROJECT_NAME + " ]>>>>>>>>>>>>>>>>>>")
+    # get_elbow_point()
+    # kmeans, y_kmeans = do_kmeans()
+    # get_plt_of_scikit_kmeans(kmeans, y_kmeans).show()
+    # do_expect_max_for_kmanes().show()
+    print("::::::::::: %.2f seconds ::::::::::::::" % (time.perf_counter() - start_time))
